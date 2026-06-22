@@ -12,9 +12,9 @@
 
 ## Screenshots (截图)
 
-| 主界面 (Main) | 加密 (Encrypt) | 解密 (Decrypt) |
-| :---: | :---: | :---: |
-| ![主界面](./screenshots/main.png) | ![加密](./screenshots/encrypt.png) | ![解密](./screenshots/decrypt.png) |
+| 主界面 (Main) | 
+| :---: |
+| ![主界面](./main.png) | 
 
 > **注**：请将你的应用截图放入 `screenshots/` 文件夹，并命名为 `main.png`、`encrypt.png`、`decrypt.png`，或修改上述图片路径。
 
