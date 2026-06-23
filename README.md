@@ -63,14 +63,50 @@
 ### 许可证
 本项目采用 **MIT License** 许可证。详见 `LICENSE` 文件。
 
+## 🌐 跨平台互通性 (Cross-Platform Interoperability)
 
+本项目提供的 **Java 客户端** 与 **Python 客户端（https://github.com/BI3BJU/Text-Encryption-Tool-Python）** 拥有完全一致且对齐的底层加密架构。
+这意味着：**您在 Python 端加密的密文，可以直接在 Android 端解密；反之亦然。**
+
+### 🔐 核心加密对齐标准
+
+两端在进行加解密时，严格遵循以下数学与密码学规范：
+
+1. **密钥派生 (Key Derivation)**：
+   双方均采用 **SHA-256** 算法。用户输入的任意长度密码都会先转换为 `UTF-8` 字节流，随后派生成固定 `32 字节 (256-bit)` 的强密钥，用于后续的 AES 加密。
+2. **加密算法 (Encryption)**：
+   采用国际标准的 **AES-256-GCM** 认证加密模式（无填充 `NoPadding`，认证标签 Tag 长度为 `128-bit / 16字节`）。
+3. **随机盐 (Nonce/IV)**：
+   每次加密均使用系统级安全随机数生成器（Python 的 `os.urandom` 与 Android 的 `SecureRandom`）生成一个全新的 **12 字节 Nonce**。即使密码和明文相同，每次生成的密文也是完全不同的。
+
+---
+
+### 📦 密文数据结构 (Data Layout)
+
+为了确保两端生成的二进制数据能够顺畅互通，密文在传输/展示前进行了严格的字节拼接。
+
+无论是 Base64 还是 Hex（十六进制）格式，解包后的原始二进制字节流（Raw Bytes）结构如下：
+
+| 字节范围 (Bytes) | 数据类型 | 作用 |
+| :--- | :--- | :--- |
+| `0 ~ 11` (前 12 字节) | **Nonce (IV)** | 初始化向量，用于防重放与差异化密文 |
+| `12 ~ 结尾` (剩余字节) | **Ciphertext + Auth Tag** | 真正的加密密文以及末尾 16 字节的 GCM 认证标签 |
+
+
+
+解密时，两端程序都会自动切片读取前 12 字节作为 Nonce，提取剩余字节作为密文与 Tag 进行完整性校验及解密。
+
+---
+
+### 🔄 传输格式支持
+
+两端程序均内置了**密文格式自动识别引擎**。当您复制密文准备解密时，无需手动选择输入格式，工具会自动判断并解析以下两种表现层编码：
+* **Base64 字符串**（例如：`aBc1...==`）
+* **Hex / 十六进制字符串**（例如：`61626331...`）
 
 
 ---
 
-
-
----
 
 ## English
 
@@ -121,7 +157,41 @@ A lightweight Android app for symmetric encryption/decryption of text using **AE
 ### License
 Distributed under the **MIT License**. See `LICENSE` for more information.
 
+## 🌐 Cross-Platform Interoperability
+
+The **Java client** provided in this project and the **Python client (https://github.com/BI3BJU/Text-Encryption-Tool-Python)** share a fully consistent and aligned underlying encryption architecture.
+This means: **Ciphertext encrypted on the Python side can be directly decrypted on the Android side, and vice versa.**
+
+### 🔐 Core Encryption Standards
+
+Both implementations strictly adhere to the following mathematical and cryptographic specifications during encryption and decryption:
+
+1. **Key Derivation**:
+Both sides utilize the **SHA-256** algorithm. User-provided passwords of any length are first converted into a `UTF-8` byte stream and then derived into a fixed-length, strong **32-byte (256-bit)** key for subsequent AES encryption.
+2. **Encryption Algorithm**:
+Uses the industry-standard **AES-256-GCM** authenticated encryption mode (`NoPadding`; authentication tag length: `128-bit / 16 bytes`).
+3. **Random Salt (Nonce/IV)**:
+For every encryption operation, a unique **12-byte Nonce** is generated using a system-level cryptographically secure random number generator (Python's `os.urandom` and Android's `SecureRandom`). Even if the password and plaintext remain identical, the resulting ciphertext differs every time.
+
 ---
 
+### 📦 Ciphertext Data Structure
+
+To ensure seamless interoperability of binary data between the two platforms, the ciphertext undergoes strict byte concatenation before transmission or display. Regardless of whether the format is Base64 or Hex (hexadecimal), the structure of the unpacked raw binary byte stream is as follows:
+
+| Byte Range | Data Type | Purpose |
+| :--- | :--- | :--- |
+| `0 ~ 11` (First 12 bytes) | **Nonce (IV)** | Initialization Vector; used to prevent replay attacks and ensure ciphertext uniqueness |
+| `12 ~ End` (Remaining bytes) | **Ciphertext + Auth Tag** | The actual encrypted ciphertext followed by the 16-byte GCM authentication tag |
+
+During decryption, the programs on both ends automatically slice the input to read the first 12 bytes as the Nonce, while extracting the remaining bytes as the ciphertext and tag for integrity verification and decryption.
+
+---
+
+### 🔄 Transmission Format Support
+
+Both programs feature a built-in **ciphertext format auto-detection engine**. When you copy the ciphertext for decryption, there is no need to manually select the input format; the tool automatically identifies and parses the following two encoding formats:
+* **Base64 string** (e.g., `aBc1...==`)
+* **Hex / Hexadecimal string** (e.g., `61626331...`)
 
 ---
