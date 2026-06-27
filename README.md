@@ -104,7 +104,8 @@
 * **Base64 字符串**（例如：`aBc1...==`）
 * **Hex / 十六进制字符串**（例如：`61626331...`）
 
-
+免责声明
+本应用按“原样”提供，仅供实验和教育用途。作者不对因使用本软件造成的任何误用或损害负责。
 ---
 
 
@@ -194,4 +195,6 @@ Both programs feature a built-in **ciphertext format auto-detection engine**. Wh
 * **Base64 string** (e.g., `aBc1...==`)
 * **Hex / Hexadecimal string** (e.g., `61626331...`)
 
+Disclaimer
+This app is provided as‑is for experimental and educational purposes. The author is not responsible for any misuse or damage caused by this software.
 ---
